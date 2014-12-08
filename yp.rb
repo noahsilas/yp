@@ -4,10 +4,23 @@ require 'twilio-ruby'
 require './phonebook'
 require './directory_service'
 
+# How frequently should we pull updates from the directory CSV?
+CSV_CACHE_TIME = 600 # seconds
+
+# Did we set the phonebook cache recently enough to reuse?
+def phonebook_cache_valid?
+  return false unless @phonebook_timestamp
+  delta = Time.now - @phonebook_timestamp
+  delta < CSV_CACHE_TIME
+end
+
 # A populated Phonebook, suitable for searching
 # @return [Phonebook]
 def phonebook
-  @phonebook ||= Phonebook.new.tap do |phonebook|
+  return @phonebook if phonebook_cache_valid?
+
+  @phonebook_timestamp = Time.now
+  @phonebook = Phonebook.new.tap do |phonebook|
     DirectoryService.getDirectory(ENV['YP_PHONEBOOK_URI']).each do |name, phone|
       phonebook.add(name, phone)
     end
