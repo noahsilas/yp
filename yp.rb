@@ -38,7 +38,7 @@ post '/twilio/search' do
     if matches.length == 1
       connect_twiml(matches[0])
     else
-      clarify_twiml(query, matches)
+      clarify_twiml(query, matches[0..9])
     end
   end
 end

@@ -41,7 +41,12 @@ bundle exec rspec
 ```
 
 
-
 Twilio Configuration
 ---
 Voice Request Url: <HostName>/twilio/incoming
+
+
+Known Limitations
+---
+* A search that has more than ten results won't return the complete list, as we
+  can't index into it with a single keypress.
