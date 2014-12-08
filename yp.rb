@@ -1,6 +1,16 @@
 require 'sinatra'
 require 'twilio-ruby'
+require './directory_services'
 
+# Essentially transfer the hash from directoryServices to Phonebook
+# @param phonebook [Phonebook] The global phonebook with search cababilities
+# @return nil
+def getDirectory(phonebook)
+  DirectoryService.getDirectory(ENV['YP_PHONEBOOK_URI']).each do |name, phone|
+    phonebook.add(name, phone)
+  end
+end
+  
 get '/' do
   'YellowPages'
 end
