@@ -1,14 +1,22 @@
 require 'sinatra'
+require 'twilio-ruby'
 
 get '/' do
   'YellowPages'
 end
 
 post '/twilio/incoming' do
-  <<-TWIML
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say voice="man">Hello World</Say>
-</Response>
-  TWIML
+  Twilio::TwiML::Response.new do |r|
+    r.Gather(action: '/twilio/search', finishOnKey: '#', numDigits: 3) do
+      r.Say('Enter the first three letters of a name.', voice: 'woman')
+    end
+  end.text
+end
+
+post '/twilio/search' do
+  Twilio::TwiML::Response.new do |r|
+    params['Digits'].split('').each do |digit|
+      r.Say digit
+    end
+  end.text
 end
