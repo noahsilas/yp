@@ -2,7 +2,7 @@ require 'sinatra'
 require 'twilio-ruby'
 
 require './phonebook'
-require './directory_services'
+require './directory_service'
 
 # A populated Phonebook, suitable for searching
 # @return [Phonebook]
