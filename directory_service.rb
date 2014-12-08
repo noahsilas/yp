@@ -11,7 +11,7 @@ class DirectoryService
 
     file_contents = open(uri).read
     CSV.new(file_contents, { headers: true } ).each { |entry|
-      directory[entry["first name"]] = entry["phone"]
+      directory[entry["Name"]] = entry["Phone"]
     }
 
     return directory
