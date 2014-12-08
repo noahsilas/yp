@@ -27,3 +27,8 @@ Running tests
 ```bash
 bundle exec rspec
 ```
+
+
+Twilio Configuration
+---
+Voice Request Url: <HostName>/twilio/incoming
