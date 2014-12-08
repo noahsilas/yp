@@ -1,16 +1,19 @@
 require 'sinatra'
 require 'twilio-ruby'
+
+require './phonebook'
 require './directory_services'
 
-# Essentially transfer the hash from directoryServices to Phonebook
-# @param phonebook [Phonebook] The global phonebook with search cababilities
-# @return nil
-def getDirectory(phonebook)
-  DirectoryService.getDirectory(ENV['YP_PHONEBOOK_URI']).each do |name, phone|
-    phonebook.add(name, phone)
+# A populated Phonebook, suitable for searching
+# @return [Phonebook]
+def phonebook
+  @phonebook ||= Phonebook.new.tap do |phonebook|
+    DirectoryService.getDirectory(ENV['YP_PHONEBOOK_URI']).each do |name, phone|
+      phonebook.add(name, phone)
+    end
   end
 end
-  
+
 get '/' do
   'YellowPages'
 end
@@ -24,9 +27,17 @@ post '/twilio/incoming' do
 end
 
 post '/twilio/search' do
-  Twilio::TwiML::Response.new do |r|
-    params['Digits'].split('').each do |digit|
-      r.Say digit
-    end
-  end.text
+  matches = phonebook.dialpad_search(params['Digits'])
+  if matches.empty?
+    Twilio::TwiML::Response.new do |r|
+      r.Say 'No matches found.'
+      r.Hangup
+    end.text
+  else
+    name, number = matches.first
+    Twilio::TwiML::Response.new do |r|
+      r.Say "Connecting to #{name}"
+      r.Dial { r.Number number }
+    end.text
+  end
 end
