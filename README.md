@@ -20,3 +20,10 @@ From the project root:
 ```bash
 bundle exec ruby yp.rb
 ```
+
+
+Running tests
+---
+```bash
+bundle exec rspec
+```
