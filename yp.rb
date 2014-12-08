@@ -37,7 +37,7 @@ post '/twilio/search' do
     name, number = matches.first
     Twilio::TwiML::Response.new do |r|
       r.Say "Connecting to #{name}"
-      r.Dial { r.Number number }
+      r.Dial(callerId: params['To']) { r.Number number }
     end.text
   end
 end
