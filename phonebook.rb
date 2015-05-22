@@ -35,6 +35,7 @@ class Phonebook
   # @return [Array<String>] A list of (name, number) pairs matching the digits
   def dialpad_search(digits)
     data.each.select do |name, _number|
+      next unless name
       name.split.any? do |name_part|
         self.class.phoneword(name_part).start_with?(digits)
       end

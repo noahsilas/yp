@@ -53,5 +53,14 @@ describe Phonebook do
         expect(subject).to include(jerroyd)
       end
     end
+
+    context 'when there are null entries in the phone book' do
+      let(:phonebook) { super().tap { |pb| pb.add(nil, nil) } }
+      let(:query) { '666' } # /[MNO]{3}/ =~ MOORE
+
+      it 'does not raise' do
+        expect{ subject }.not_to raise_error
+      end
+    end
   end
 end
